@@ -1,53 +1,53 @@
 #ifndef __STRING_LIST__
 #define __STRING_LIST__
 
-#include "common.h"
-#include "base_type.h"
-#include <vector>
+#include "string_list_base.h"
 
 __COMMON_BEGIN_NAMESPACE
 
-template<typename ST=std::string, typename CT = std::vector<ST> >
-class String_list
+class String_list:public String_list_base<>
 {
 	public:
-		typedef ST string_type;
-		typedef CT container_type;
+		typedef String_list_base<>::string_type string_type;
+		typedef String_list_base<>::container_type container_type;
 
 	public:
 		String_list(){}
 
-		
 		void parse_string(string_type &_string, string_type &_split)
 		{
-			Uint32 head = 0;
-			Uint32 tail = 0;
-
-			while ( (tail = _string.find_first_of(_split, head) ) != string_type::npos )
-			{
-				if (tail > head)
-					m_container.push_back(_string.substr(head, tail - head));
-				head = tail + 1;
-			}
-			
-			m_container.push_back(_string.substr(head, tail - head));
+			parse_string_base(_string, _split);
 		}
 
-		string_type operator[](Uint32 _index)
+		void parse_string(string_type &_string, char _split)
 		{
-			return m_container[_index];
+			string_type split_str(1, _split);
+			parse_string_base(_string, split_str);
 		}
 
-		Uint32 size()
+		void parse_string(const char *_str_p, size_t _str_size, const char *_split_p, size_t _split_size)
 		{
-			return m_container.size();
+			string_type string_(_str_p, _str_size);
+			string_type split_(_split_p, _split_size);
+			parse_string_base(string_, split_);
 		}
 
-	private:
-		container_type m_container;
-		string_type    m_split;
+		void parse_string(const char *_str_p, const char *_split_p)
+		{
+			string_type string_(_str_p);
+			string_type split_(_split_p);
+			parse_string_base(string_, split_);
+		}
+
+		void parse_string(const char *_str_p, char _split)
+		{
+			string_type string_(_str_p);
+			string_type split_(1, _split);
+			parse_string_base(string_, split_);
+		}
 };
 
 __COMMON_END_NAMESPACE
+
 
 #endif
