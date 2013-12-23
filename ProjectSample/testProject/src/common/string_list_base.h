@@ -16,6 +16,7 @@ class String_list_base
 
 	public:
 		String_list_base(){}
+		~String_list_base(){}
 
 		string_type operator[](Uint32 _index)
 		{

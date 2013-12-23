@@ -5,12 +5,10 @@ CXXFLAGS = -I../../ -I. -w
 CXX_DEBUG_FLAGS = -g -ggdb
 CXX = g++
 
-
 all : format $(TARGET)
 
 format:
 	$(FORMAT) *.cpp
-
 test_underived:test_underived.o
 	$(CXX) -o $(TARGET) test_underived.o
 test_underived.o:test_underived.cpp
