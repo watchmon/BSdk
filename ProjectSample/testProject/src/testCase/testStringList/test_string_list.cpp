@@ -7,7 +7,7 @@ USING_NAMESPACE_COMMON
 
 int main()
 {
-    String_list list;
+    String_list<> list;
     string test_str1("fdasjkf:jfdkslajfd;ls:fjdj:1231:::::fjds:::");
     string test_split(":");
     list.parse_string(test_str1, test_split);
