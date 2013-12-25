@@ -1,23 +1,43 @@
 #include <iostream>
+#include <malloc.h>
+#include <fstream>
 #include "common/common.h"
 #include "common/string_list.h"
+#include <gperftools/profiler.h>
 
 using namespace std;
 USING_NAMESPACE_COMMON
 
 int main()
 {
+    ProfilerStart("codefile");
+    ifstream fs("CacheMessage.java", ifstream::binary);
+    string file_str;
+    char* p = NULL;
+    int length = 0;
+
+    if (fs)
+    {
+        fs.seekg(0, fs.end);
+        length = fs.tellg();
+        fs.seekg(0, fs.beg);
+
+        p = (char*)malloc(length);
+
+        fs.read(p, length);
+        fs.close();
+    }
+
     String_list<> list;
-    string test_str1("fdasjkf:jfdkslajfd;ls:fjdj:1231:::::fjds:::");
+    string test_str1(p, length);
     string test_split(":");
     list.parse_string(test_str1, test_split);
-    cout << "原始字符串" << endl;
-    cout << test_str1 << endl;
-    cout << "分割后的字符串" << endl;
+#if 0
 
     for (int i = 0; i < list.size(); i++)
     {
         cout << list[i] << endl;
+        cout << "第" << i << "个" << endl;
     }
 
     cout << endl;
@@ -40,6 +60,8 @@ int main()
         cout << list[i] << endl;
     }
 
+#endif
+    ProfilerStop();
     return 0;
 }
 
