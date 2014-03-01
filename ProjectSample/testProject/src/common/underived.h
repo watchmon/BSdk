@@ -8,33 +8,33 @@ __COMMON_BEGIN_NAMESPACE
 template<typename T>
 class Underived_base
 {
-	public:
-		struct Underived_base_tool
-		{
-			typedef T Type;
-		};
+    public:
+        struct Underived_base_tool
+        {
+            typedef T Type;
+        };
 
-		friend class Underived_base_tool::Type;
+        friend class Underived_base_tool::Type;
 
-	protected:
-		Underived_base(){}
+    protected:
+        Underived_base() {}
 
-		~Underived_base(){}
+        ~Underived_base() {}
 };
 
 template<typename T>
 class Underived:virtual private Underived_base<T>
 {
-	public:
-		struct Underived_tool
-		{
-			typedef T Type;
-		};
+    public:
+        struct Underived_tool
+        {
+            typedef T Type;
+        };
 
-	protected:
-		Underived(){}
+    protected:
+        Underived() {}
 
-		~Underived(){}
+        ~Underived() {}
 };
 
 __COMMON_END_NAMESPACE
