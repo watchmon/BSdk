@@ -1,0 +1,34 @@
+﻿#ifndef _COMMON_MODULE_BASE_H
+#define _COMMON_MODULE_BASE_H
+
+#include "concurrent.h"
+#include <string>
+
+__COMMON_BEGIN_NAMESPACE
+
+class Module_base : public Thread
+{
+    public:
+        Module_base() { }
+        virtual ~Module_base() { }
+
+        // 打印模块的配置到日志文件
+        virtual void print_config() const = 0;
+
+		inline void set_module_name(std::string &_module_name)
+		{
+			m_module_name = _module_name;
+		}
+
+		inline std::string get_module_name()
+		{
+			return m_module_name;
+		}
+
+	private:
+		std::string m_module_name;
+};
+
+__COMMON_END_NAMESPACE
+
+#endif

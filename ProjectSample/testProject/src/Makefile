@@ -7,7 +7,7 @@ recursive:
 			if [ $$? -ne 0 ]; then\
 				exit 1;\
 			fi;\
-		gmake;\
+		make;\
 		if [ $$? -ne 0 ]; then\
 			exit 1;\
 		fi;\
@@ -19,7 +19,7 @@ clean:
 	for i in $(SUBDIRS);\
 	do\
 		cd $$i;\
-		gmake clean;\
+		make clean;\
 		if [ $$? -ne 0 ] ; then\
 			exit 1;\
 		fi; \
