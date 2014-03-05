@@ -1,0 +1,188 @@
+#include "network_module.h"
+#include <unistd.h>
+#include <stdlib.h>
+#include "RakNetSource/RakPeerInterface.h"
+#include "RakNetSource/MessageIdentifiers.h"
+#include "RakNetSource/Kbhit.h"
+#include "RakNetSource/Gets.h"
+#include "RakNetSource/Getche.h"
+#include "RakNetSource/RakNetStatistics.h"
+#include "RakNetSource/RakSleep.h"
+
+NETWORK_MODULE_BEGIN_NAMESPACE
+
+Logger Network_module::ms_logger;
+
+Network_module::Network_module():
+    m_max_connection(DEFAULT_MAX_CONNECTION),
+    m_max_income_connection(DEFAULT_MAX_INCOME_CONNECTION),
+    m_local_port(DEFAULT_LOCAL_PORT),
+    m_punch_proxy(NULL)
+{
+}
+
+Network_module::~Network_module()
+{
+    if (m_punch_proxy)
+    {
+        delete m_punch_proxy;
+    }
+}
+
+void Network_module::run()
+{
+    print_config();
+
+    using namespace RakNet;
+    RakNet::RakPeerInterface* l_rakpeer = RakNet::RakPeerInterface::GetInstance();
+
+    int l_addr_count = l_rakpeer->GetNumberOfAddresses();
+    NET_MOD_INFO("获取到本机IP数量%d个", l_addr_count);
+
+    for (int i = 0; i < l_addr_count; i++)
+    {
+        RakNet::SystemAddress addr = l_rakpeer->GetLocalIP(i);
+        NET_MOD_INFO("第%d个IP地址为:%s", i + 1, addr.ToString(false));
+    }
+
+    RakNet::SocketDescriptor l_socket_descriptor;
+    l_socket_descriptor.port = m_local_port;
+
+    if (l_rakpeer->Startup(m_max_connection, &l_socket_descriptor, 1) != RakNet::RAKNET_STARTED)
+    {
+        NET_MOD_ERROR("启动网络引擎失败");
+        RakNet::RakPeerInterface::DestroyInstance(l_rakpeer);
+        return;
+    }
+    l_rakpeer->SetMaximumIncomingConnections(m_max_income_connection);
+
+    NET_MOD_INFO("启动网络引擎成功，监控地址为%s", l_rakpeer->GetMyBoundAddress().ToString(false));
+    
+	NET_MOD_INFO("开始载入打孔插件");
+    m_punch_proxy = new NatPunchProxy;
+    m_punch_proxy->init_proxy(l_rakpeer);
+
+    start_network_loop(l_rakpeer);
+}
+
+void Network_module::start_network_loop(RakNet::RakPeerInterface *rakPeer)
+{
+	using namespace RakNet;
+	RakPeerInterface *l_rakpeer = rakPeer;
+    Packet* l_packet = NULL;
+
+    while (1)
+    {
+        if ((SIGINT == get_signal()) || (SIGTERM == get_signal()))
+        {
+            NET_MOD_INFO("获取到终止信号,开始停止网络引擎");
+
+            if (m_punch_proxy)
+            {
+                m_punch_proxy->stop_proxy(l_rakpeer);
+            }
+
+            l_rakpeer->Shutdown(DEFAULT_SHUT_DOWN_TIME);
+            RakNet::RakPeerInterface::DestroyInstance(l_rakpeer);
+
+            break;
+        }
+
+        for (l_packet = l_rakpeer->Receive(); l_packet; l_rakpeer->DeallocatePacket(l_packet), l_packet = l_rakpeer->Receive())
+        {
+            m_punch_proxy->process_packet(l_rakpeer, l_packet);
+        }
+
+        sleep(1);
+		RakNetStatistics rns;
+		char message[2048];
+		bool hasStatistics = rakPeer->GetStatistics(0, &rns);
+
+		if (hasStatistics)
+		{
+			StatisticsToString(&rns, message, 2);
+//			NET_MOD_INFO("SYSTEM 0:\n%s\n", message);
+
+			memset(&rns, 0, sizeof(RakNetStatistics));
+			rakPeer->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS, &rns);
+			StatisticsToString(&rns, message, 2);
+//			NET_MOD_INFO("STAT SUM:\n%s\n", message);
+		}
+        DataStructures::List<RakNet::SystemAddress> adds;
+        DataStructures::List<RakNet::RakNetGUID> guids;
+        l_rakpeer->GetSystemList(adds, guids);
+        NET_MOD_INFO("%d已经连接", adds.Size());
+    }
+}
+
+void Network_module::print_config() const
+{
+    NET_MOD_INFO("模块名为%s", get_name());
+    NET_MOD_INFO("最大连接数为%d", m_max_connection);
+    NET_MOD_INFO("最大被连接数为%d", m_max_income_connection);
+    NET_MOD_INFO("本地监听端口为%d", m_local_port);
+}
+
+void Network_module::set_max_connection(const char* _max_connection)
+{
+    int max_connection = strtol(_max_connection, NULL, 10);
+    m_max_connection = max_connection;
+}
+
+void Network_module::set_max_income_connection(const char* _max_income_connection)
+{
+    int max_income_connection = strtol(_max_income_connection, NULL, 10);
+    m_max_income_connection = max_income_connection;
+}
+
+void Network_module::set_local_port(const char* _local_port)
+{
+    int local_port = strtol(_local_port, NULL, 10);
+    m_local_port = local_port;
+}
+
+NatPunchProxy::NatPunchProxy():m_punch_server(NULL)
+{
+}
+
+NatPunchProxy::~NatPunchProxy()
+{
+}
+
+void NatPunchProxy::init_proxy(RakNet::RakPeerInterface* p_rakpeer)
+{
+    if (!p_rakpeer)
+    {
+        NET_MOD_ERROR("rakPeer为空指针，无法加载打孔插件");
+        return;
+    }
+
+    m_punch_server = new RakNet::NatPunchthroughServer;
+    p_rakpeer->AttachPlugin(m_punch_server);
+    m_punch_server->SetDebugInterface(this);
+
+    NET_MOD_INFO("打孔插件加载完毕");
+}
+
+void NatPunchProxy::process_packet(RakNet::RakPeerInterface* p_rakpeer, RakNet::Packet* p_packet)
+{
+    if (p_packet->data[0] == ID_NEW_INCOMING_CONNECTION)
+    {
+        NET_MOD_INFO("出现新的连接请求");
+    }
+}
+
+void NatPunchProxy::stop_proxy(RakNet::RakPeerInterface* p_rakpeer)
+{
+    if (m_punch_server)
+    {
+        p_rakpeer->DetachPlugin(m_punch_server);
+        delete m_punch_server;
+    }
+
+    m_punch_server = NULL;
+
+    NET_MOD_INFO("打孔代理已停止");
+}
+
+NETWORK_MODULE_END_NAMESPACE
