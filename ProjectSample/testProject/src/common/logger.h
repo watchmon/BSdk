@@ -50,7 +50,7 @@ __COMMON_BEGIN_NAMESPACE
 #define LOG_ERROR(logger, ...)   LOG((logger), Logger::Error,   "E", __VA_ARGS__)
 
 //是否启用终端输出log，不使用则注释该宏
-#define __PRINT_SCREEN
+//#define __PRINT_SCREEN
 
 #define LOG(logger, level, level_string, ...) \
 do {                                                                     \
@@ -65,7 +65,7 @@ do {                                                                     \
             now_tm.tm_year+1900, now_tm.tm_mon+1, now_tm.tm_mday,        \
             now_tm.tm_hour, now_tm.tm_min, now_tm.tm_sec, now.tv_usec,   \
             getpid(), (unsigned int)pthread_self(), __LINE__);           \
-        (logger).append( __VA_ARGS__ );                                  \
+        (logger).append(__VA_ARGS__);                                    \
         (logger).append("\n");                                           \
         (logger).check_switch();                                         \
     }                                                                    \

@@ -61,7 +61,10 @@ int Test_server::load_config()
     }
 
     m_module1 = new Module1;
-    m_module2 = new Module2;
+//    m_module2 = new Module2;
+
+    m_module1->set_name("module1");
+//    m_module2->set_name("module2");
 
     //读取global配置信息
     char buffer[100];
@@ -69,7 +72,7 @@ int Test_server::load_config()
     pre_log("read global config, log_dir %s\n", buffer);
 
     m_module1->init_log("module1", buffer, "debug");
-    m_module2->init_log("module2", buffer, "debug");
+//    m_module2->init_log("module2", buffer, "debug");
 
     return 0;
 }
@@ -80,7 +83,7 @@ int Test_server::run()
 
     // 启动各个模块线程
     m_module1->start();
-    m_module2->start();
+//    m_module2->start();
 
     for (int i=0; ; i++)
     {
@@ -89,7 +92,7 @@ int Test_server::run()
         {
             pre_log("catch signal %d. exit\n", get_signal());
             m_module1->set_signal(get_signal());
-            m_module2->set_signal(get_signal());
+//            m_module2->set_signal(get_signal());
             break;
         }
 
@@ -100,9 +103,9 @@ int Test_server::run()
     delete m_module1;
     m_module1 = NULL;
 
-    m_module2->join();
-    delete m_module2;
-    m_module2 = NULL;
+//    m_module2->join();
+//    delete m_module2;
+//    m_module2 = NULL;
 
     return 0;
 }

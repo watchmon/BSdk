@@ -49,7 +49,7 @@ Test_server::~Test_server()
 
 int Test_server::load_config()
 {
-	pre_log("start to load test server config file\n");
+    pre_log("start to load test server config file\n");
 
     // 打开配置文件
     Inifile inifile;
@@ -61,18 +61,18 @@ int Test_server::load_config()
     }
 
     m_module1 = new Module1;
-    m_module1->set_name("module1");
-
     m_module2 = new Module2;
-    m_module2->set_name("module2");
+
+	m_module1->set_name("module1");
+	m_module2->set_name("module2");
 
     //读取global配置信息
     char buffer[100];
     inifile.get_value("global", "log_dir", buffer, sizeof(buffer));
-	pre_log("read global config, log_dir %s\n", buffer);
+    pre_log("read global config, log_dir %s\n", buffer);
 
-    m_module1->set_log_dir(buffer);
-    m_module2->set_log_dir(buffer);
+    m_module1->init_log("module1", buffer, "debug");
+    m_module2->init_log("module2", buffer, "debug");
 
     return 0;
 }
