@@ -237,7 +237,7 @@ namespace runnable_detail
     };
 
     template < class T, class T2, class RT, class P1, class P2, class P3, class P4,
-               class PARA1, class PARA2, class PARA3, class PARA4 >
+             class PARA1, class PARA2, class PARA3, class PARA4 >
     class memfun_call4: public Runnable
     {
         public:
@@ -268,7 +268,7 @@ namespace runnable_detail
     };
 
     template < class T, class T2, class RT, class P1, class P2, class P3, class P4, class P5,
-               class PARA1, class PARA2, class PARA3, class PARA4, class PARA5 >
+             class PARA1, class PARA2, class PARA3, class PARA4, class PARA5 >
     class memfun_call5: public Runnable
     {
         public:
@@ -361,11 +361,11 @@ struct memfun_is_conv
 };
 
 template < typename T, typename T2, bool is_const_fun,
-           typename P1, typename PA1,
-           typename P2 = null_type, typename PA2 = null_type,
-           typename P3 = null_type, typename PA3 = null_type,
-           typename P4 = null_type, typename PA4 = null_type,
-           typename P5 = null_type, typename PA5 = null_type >
+         typename P1, typename PA1,
+         typename P2 = null_type, typename PA2 = null_type,
+         typename P3 = null_type, typename PA3 = null_type,
+         typename P4 = null_type, typename PA4 = null_type,
+         typename P5 = null_type, typename PA5 = null_type >
 class memfun_disable_if_helper
 {
         enum
@@ -385,12 +385,12 @@ class memfun_disable_if_helper
 };
 
 template < typename T, typename T2, bool is_const_fun,
-           typename P1 = null_type, typename PA1 = null_type,
-           typename P2 = null_type, typename PA2 = null_type,
-           typename P3 = null_type, typename PA3 = null_type,
-           typename P4 = null_type, typename PA4 = null_type,
-           typename P5 = null_type, typename PA5 = null_type,
-           typename RT = void*** >
+         typename P1 = null_type, typename PA1 = null_type,
+         typename P2 = null_type, typename PA2 = null_type,
+         typename P3 = null_type, typename PA3 = null_type,
+         typename P4 = null_type, typename PA4 = null_type,
+         typename P5 = null_type, typename PA5 = null_type,
+         typename RT = void*** >
 class memfun_disable_if : public disable_if<memfun_disable_if_helper<T, T2, is_const_fun, P1, PA1, P2, PA2, P3, PA3, P4, PA4, P5, PA5>, RT>
 {};
 
@@ -439,7 +439,7 @@ inline Runnable* make_memfun_runnable(const T& obj, RT(T2::* mf)(P1, P2) const, 
 }
 
 template < typename T, typename T2, typename RT, typename P1, typename P2, typename P3,
-           typename PARA1, typename PARA2, typename PARA3 >
+         typename PARA1, typename PARA2, typename PARA3 >
 inline Runnable* make_memfun_runnable(T& obj, RT(T2::* mf)(P1, P2, P3), PARA1 para1, PARA2 para2, PARA3 para3, typename memfun_disable_if<T, T2, false, P1, PARA1, P2, PARA2, P3, PARA3>::type dummy = 0)
 {
     typedef runnable_detail::memfun_call3<T, T2, RT, P1, P2, P3, PARA1, PARA2, PARA3>	MFT;
@@ -447,7 +447,7 @@ inline Runnable* make_memfun_runnable(T& obj, RT(T2::* mf)(P1, P2, P3), PARA1 pa
 }
 
 template < typename T, typename T2, typename RT, typename P1, typename P2, typename P3,
-           typename PARA1, typename PARA2, typename PARA3 >
+         typename PARA1, typename PARA2, typename PARA3 >
 inline Runnable* make_memfun_runnable(const T& obj, RT(T2::* mf)(P1, P2, P3) const, PARA1 para1, PARA2 para2, PARA3 para3, typename memfun_disable_if<const T, T2, true, P1, PARA1, P2, PARA2, P3, PARA3>::type dummy = 0)
 {
     typedef runnable_detail::memfun_call3<const T, const T2, RT, P1, P2, P3, PARA1, PARA2, PARA3>		MFT;
@@ -455,7 +455,7 @@ inline Runnable* make_memfun_runnable(const T& obj, RT(T2::* mf)(P1, P2, P3) con
 }
 
 template < typename T, typename T2, typename RT, typename P1, typename P2, typename P3, typename P4,
-           typename PARA1, typename PARA2, typename PARA3, typename PARA4 >
+         typename PARA1, typename PARA2, typename PARA3, typename PARA4 >
 inline Runnable* make_memfun_runnable(T& obj, RT(T2::* mf)(P1, P2, P3, P4), PARA1 para1, PARA2 para2, PARA3 para3, PARA4 para4, typename memfun_disable_if<T, T2, false, P1, PARA1, P2, PARA2, P3, PARA3, P4, PARA4>::type dummy = 0)
 {
     typedef runnable_detail::memfun_call4<T, T2, RT, P1, P2, P3, P4, PARA1, PARA2, PARA3, PARA4>		MFT;
@@ -463,7 +463,7 @@ inline Runnable* make_memfun_runnable(T& obj, RT(T2::* mf)(P1, P2, P3, P4), PARA
 }
 
 template < typename T, typename T2, typename RT, typename P1, typename P2, typename P3, typename P4,
-           typename PARA1, typename PARA2, typename PARA3, typename PARA4 >
+         typename PARA1, typename PARA2, typename PARA3, typename PARA4 >
 inline Runnable* make_memfun_runnable(const T& obj, RT(T2::* mf)(P1, P2, P3, P4) const, PARA1 para1, PARA2 para2, PARA3 para3, PARA4 para4, typename memfun_disable_if<const T, T2, true, P1, PARA1, P2, PARA2, P3, PARA3, P4, PARA4>::type dummy = 0)
 {
     typedef runnable_detail::memfun_call4<const T, const T2, RT, P1, P2, P3, P4, PARA1, PARA2, PARA3, PARA4>		MFT;
@@ -471,7 +471,7 @@ inline Runnable* make_memfun_runnable(const T& obj, RT(T2::* mf)(P1, P2, P3, P4)
 }
 
 template < typename T, typename T2, typename RT, typename P1, typename P2, typename P3, typename P4, typename P5,
-           typename PARA1, typename PARA2, typename PARA3, typename PARA4, typename PARA5 >
+         typename PARA1, typename PARA2, typename PARA3, typename PARA4, typename PARA5 >
 inline Runnable* make_memfun_runnable(T& obj, RT(T2::* mf)(P1, P2, P3, P4, P5), PARA1 para1, PARA2 para2, PARA3 para3, PARA4 para4, PARA5 para5, typename memfun_disable_if<T, T2, false, P1, PARA1, P2, PARA2, P3, PARA3, P4, PARA4, P5, PARA5>::type dummy = 0)
 {
     typedef runnable_detail::memfun_call5<T, T2, RT, P1, P2, P3, P4, P5, PARA1, PARA2, PARA3, PARA4, PARA5>		MFT;
@@ -480,7 +480,7 @@ inline Runnable* make_memfun_runnable(T& obj, RT(T2::* mf)(P1, P2, P3, P4, P5), 
 
 
 template < typename T, typename T2, typename RT, typename P1, typename P2, typename P3, typename P4, typename P5,
-           typename PARA1, typename PARA2, typename PARA3, typename PARA4, typename PARA5 >
+         typename PARA1, typename PARA2, typename PARA3, typename PARA4, typename PARA5 >
 inline Runnable* make_memfun_runnable(const T& obj, RT(T2::* mf)(P1, P2, P3, P4, P5) const, PARA1 para1, PARA2 para2, PARA3 para3, PARA4 para4, PARA5 para5, typename memfun_disable_if<const T, T2, true, P1, PARA1, P2, PARA2, P3, PARA3, P4, PARA4, P5, PARA5>::type dummy = 0)
 {
     typedef runnable_detail::memfun_call5<const T, const T2, RT, P1, P2, P3, P4, P5, PARA1, PARA2, PARA3, PARA4, PARA5>		MFT;

@@ -233,8 +233,8 @@ namespace RakNet
 // Initial and reallocations will be done through whatever function is pointed to by yourMMapFunction, and yourDirectMMapFunction (default is malloc)
 // Allocations will be freed through whatever function is pointed to by yourMUnmapFunction (default free)
 void UseRaknetFixedHeap(size_t initialCapacity,
-                        void * (*yourMMapFunction)(size_t size) = RakNet::_DLMallocMMap,
-                        void * (*yourDirectMMapFunction)(size_t size) = RakNet::_DLMallocDirectMMap,
+                        void* (*yourMMapFunction)(size_t size) = RakNet::_DLMallocMMap,
+                        void* (*yourDirectMMapFunction)(size_t size) = RakNet::_DLMallocDirectMMap,
                         int (*yourMUnmapFunction)(void* p, size_t size) = RakNet::_DLMallocMUnmap);
 
 // Free memory allocated from UseRaknetFixedHeap

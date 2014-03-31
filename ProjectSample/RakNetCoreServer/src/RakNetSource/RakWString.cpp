@@ -101,7 +101,7 @@ RakWString& RakWString::operator = (const wchar_t* const str)
 }
 RakWString& RakWString::operator = (wchar_t* str)
 {
-    *this = (const wchar_t * const) str;
+    *this = (const wchar_t* const) str;
     return *this;
 }
 RakWString& RakWString::operator = (const char* const str)
@@ -149,7 +149,7 @@ RakWString& RakWString::operator = (const char* const str)
 }
 RakWString& RakWString::operator = (char* str)
 {
-    *this = (const char * const) str;
+    *this = (const char* const) str;
     return *this;
 }
 RakWString& RakWString::operator +=(const RakWString& right)
@@ -235,7 +235,7 @@ RakWString& RakWString::operator += (const wchar_t* const right)
 }
 RakWString& RakWString::operator += (wchar_t* right)
 {
-    return *this += (const wchar_t * const) right;
+    return *this += (const wchar_t* const) right;
 }
 bool RakWString::operator==(const RakWString& right) const
 {

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "inifile.h"
 
 using namespace std;

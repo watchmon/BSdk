@@ -697,6 +697,7 @@ PluginReceiveResult NatPunchthroughClient::OnReceive(Packet* packet)
 
             RakNetGUID targetGuid;
             incomingBs.Read(targetGuid);
+
             //UpdateGroupPunchOnNatResult(packet->systemAddress, targetGuid, UNASSIGNED_SYSTEM_ADDRESS, 2);
 
             if (packet->data[0]==ID_NAT_CONNECTION_TO_TARGET_LOST ||

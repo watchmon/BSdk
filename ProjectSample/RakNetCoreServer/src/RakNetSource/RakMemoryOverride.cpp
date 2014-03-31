@@ -227,8 +227,8 @@ void _DLFree_Ex(void* p, const char* file, unsigned int line)
 }
 
 void UseRaknetFixedHeap(size_t initialCapacity,
-                        void * (*yourMMapFunction)(size_t size),
-                        void * (*yourDirectMMapFunction)(size_t size),
+                        void* (*yourMMapFunction)(size_t size),
+                        void* (*yourDirectMMapFunction)(size_t size),
                         int (*yourMUnmapFunction)(void* p, size_t size))
 {
     SetDLMallocMMap(yourMMapFunction);
@@ -313,8 +313,8 @@ void _DLFree_Ex(void* p, const char* file, unsigned int line)
 }
 
 void UseRaknetFixedHeap(size_t initialCapacity,
-                        void * (*yourMMapFunction)(size_t size),
-                        void * (*yourDirectMMapFunction)(size_t size),
+                        void* (*yourMMapFunction)(size_t size),
+                        void* (*yourDirectMMapFunction)(size_t size),
                         int (*yourMUnmapFunction)(void* p, size_t size))
 {
     (void) initialCapacity;

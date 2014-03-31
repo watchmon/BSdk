@@ -1,7 +1,7 @@
 include ../../build/rules.mk
 
 TARGET = raknetCoreServer
-LIBS = -L../../lib -lpthread -lNetworkModule -lCommon -lRakNet
+LIBS = -L../../lib -lNetworkModule -lCommon -lRakNet -lpthread
 SRC_SKIP = 
 SRCS = $(filter-out $(SRC_SKIP), $(wildcard *.c) $(wildcard *.cpp))
 OBJS = $(patsubst %.c, %.o, $(patsubst %.cpp, %.o, $(SRCS)))
