@@ -54,6 +54,8 @@ class Network_module : public Thread_module_base
 
         void set_local_port(const char* _local_port);
 
+        void process_packet(RakNet::RakPeerInterface*, RakNet::Packet*);
+
     private:
         static Logger ms_logger;
 
@@ -76,7 +78,6 @@ class NatPunchProxy: public RakNet::NatPunchthroughServerDebugInterface_Printf
 
     public:
         void init_proxy(RakNet::RakPeerInterface*);
-        void process_packet(RakNet::RakPeerInterface*, RakNet::Packet*);
         void stop_proxy(RakNet::RakPeerInterface*);
 
     private:

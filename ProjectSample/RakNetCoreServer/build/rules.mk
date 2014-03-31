@@ -9,7 +9,7 @@ CXX_DEBUG_FLAGS = -g -ggdb
 CC_DEBUG_FLAGS = -g -ggdb
 
 AR = ar
-FORMAT = ../../build/astyle -A1 -C -N -j -b -k1 -S -f -U -H -m0 -M80
+FORMAT = ../../build/astyle -A1 -C -N -j -k1 -S -f -U -H -m0 -M80
 LIB_CXX_FLAGS = -shared -fPIC -fpic
 
 # 编译规则定义

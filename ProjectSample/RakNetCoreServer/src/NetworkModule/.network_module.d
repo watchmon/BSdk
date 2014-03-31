@@ -21,7 +21,9 @@ network_module.o: network_module.cpp network_module.h \
  ../RakNetSource/DS_Queue.h ../RakNetSource/SimpleMutex.h \
  ../RakNetSource/DS_MemoryPool.h ../RakNetSource/MessageIdentifiers.h \
  ../RakNetSource/Kbhit.h ../RakNetSource/Gets.h ../RakNetSource/Getche.h \
- ../RakNetSource/RakNetStatistics.h ../RakNetSource/RakSleep.h
+ ../RakNetSource/RakNetStatistics.h ../RakNetSource/RakSleep.h \
+ ../RakNetSource/BitStream.h ../RakNetSource/RakWString.h \
+ ../RakNetSource/PacketLogger.h
 .network_module.d: network_module.cpp network_module.h \
  ../Common/thread_module_base.h ../Common/concurrent.h \
  ../Common/runnable.h ../Common/meta.h ../Common/common.h ../Common/ref.h \
@@ -45,4 +47,6 @@ network_module.o: network_module.cpp network_module.h \
  ../RakNetSource/DS_Queue.h ../RakNetSource/SimpleMutex.h \
  ../RakNetSource/DS_MemoryPool.h ../RakNetSource/MessageIdentifiers.h \
  ../RakNetSource/Kbhit.h ../RakNetSource/Gets.h ../RakNetSource/Getche.h \
- ../RakNetSource/RakNetStatistics.h ../RakNetSource/RakSleep.h
+ ../RakNetSource/RakNetStatistics.h ../RakNetSource/RakSleep.h \
+ ../RakNetSource/BitStream.h ../RakNetSource/RakWString.h \
+ ../RakNetSource/PacketLogger.h

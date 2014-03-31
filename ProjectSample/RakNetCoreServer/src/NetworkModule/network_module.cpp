@@ -8,6 +8,8 @@
 #include "RakNetSource/Getche.h"
 #include "RakNetSource/RakNetStatistics.h"
 #include "RakNetSource/RakSleep.h"
+#include "RakNetSource/BitStream.h"
+#include "RakNetSource/PacketLogger.h"
 
 NETWORK_MODULE_BEGIN_NAMESPACE
 
@@ -66,6 +68,29 @@ void Network_module::run()
     start_network_loop(l_rakpeer);
 }
 
+void Network_module::process_packet(RakNet::RakPeerInterface* p_rakpeer, RakNet::Packet* p_packet)
+{
+    if (p_packet->data[0] > ID_USER_PACKET_ENUM)
+    {
+        NET_MOD_INFO("出现的消息%d", p_packet->data[0]);
+    }
+    else
+    {
+        NET_MOD_INFO("出现消息类型为%s", RakNet::PacketLogger::BaseIDTOString(p_packet->data[0]));
+    }
+
+    if (p_packet->data[0] > ID_USER_PACKET_ENUM)
+    {
+        RakNet::BitStream reply_msg;
+        RakNet::MessageID reply_id = p_packet->data[0];
+        char reply_detail[20] = "Hello World!";
+        reply_msg.Write(reply_id);
+        reply_msg.Write(reply_detail, sizeof(reply_detail));
+
+        p_rakpeer->Send(&reply_msg, IMMEDIATE_PRIORITY, RELIABLE, 0, p_packet->systemAddress, false);
+    }
+}
+
 void Network_module::start_network_loop(RakNet::RakPeerInterface* rakPeer)
 {
     using namespace RakNet;
@@ -91,7 +116,7 @@ void Network_module::start_network_loop(RakNet::RakPeerInterface* rakPeer)
 
         for (l_packet = l_rakpeer->Receive(); l_packet; l_rakpeer->DeallocatePacket(l_packet), l_packet = l_rakpeer->Receive())
         {
-            m_punch_proxy->process_packet(l_rakpeer, l_packet);
+            process_packet(l_rakpeer, l_packet);
         }
 
         sleep(1);
@@ -113,7 +138,7 @@ void Network_module::start_network_loop(RakNet::RakPeerInterface* rakPeer)
         DataStructures::List<RakNet::SystemAddress> adds;
         DataStructures::List<RakNet::RakNetGUID> guids;
         l_rakpeer->GetSystemList(adds, guids);
-        NET_MOD_INFO("%d已经连接", adds.Size());
+//        NET_MOD_INFO("%d已经连接", adds.Size());
     }
 }
 
@@ -166,13 +191,6 @@ void NatPunchProxy::init_proxy(RakNet::RakPeerInterface* p_rakpeer)
     NET_MOD_INFO("打孔插件加载完毕");
 }
 
-void NatPunchProxy::process_packet(RakNet::RakPeerInterface* p_rakpeer, RakNet::Packet* p_packet)
-{
-    if (p_packet->data[0] == ID_NEW_INCOMING_CONNECTION)
-    {
-        NET_MOD_INFO("出现新的连接请求");
-    }
-}
 
 void NatPunchProxy::stop_proxy(RakNet::RakPeerInterface* p_rakpeer)
 {
